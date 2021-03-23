@@ -1,0 +1,49 @@
+﻿BEGIN_SUBSHADERS
+	"Planet_Common.surfshader"
+END_SUBSHADERS
+
+BEGIN_PROPERTIES
+	[Header(DETAIL)]
+	_DetailNoiseTiling("	Noise Tiling", Float) = 1.0
+	_DetailNoiseStrength("	Noise Strength", Float) = 1.0
+	_DetailTilingA("	Tiling A", Float) = 10
+	_DetailTilingB("	Tiling B", Float) = 10
+	_DetailScaleA("	Strength A", Range(0,5)) = 1
+	_DetailScaleB("	Strength B", Range(0,5)) = 1
+	[NoScaleOffset]_DetailMaskMap("	Mask (RG)", 2D) = "white" {}
+	[NoScaleOffset][Normal]_DetailMapA("	Normal A", 2D) = "bump" {}
+	[NoScaleOffset][Normal]_DetailMapB("	Normal B", 2D) = "bump" {}
+END_PROPERTIES
+
+BEGIN_CBUFFER
+	float _DetailNoiseTiling;
+	float _DetailNoiseStrength;
+	float _DetailTilingA;
+	float _DetailTilingB;
+	float _DetailScaleA;
+	float _DetailScaleB;
+END_CBUFFER
+
+BEGIN_CODE
+	TEXTURE2D(_DetailMaskMap);
+	SAMPLER(sampler_DetailMaskMap);
+	sampler2D _DetailMapA;
+	sampler2D _DetailMapB;
+
+	void ContributeDetail(inout Surface o, sampler2D samp, float4 coords, float polar, float tiling, float weight)
+	{
+		float3 detail = UnpackScaleNormal(sample_spherical(samp, coords * tiling, polar, tiling), weight);
+
+		o.Normal = CombineNormals(o.Normal, detail);
+	}
+
+	void SurfaceFunction(inout Surface o, ShaderData d)
+	{
+		float4 mask  = SAMPLE_TEXTURE2D(_DetailMaskMap, sampler_DetailMaskMap, d.texcoord0);
+		float  noise = tex3D(_NoiseTex, d.localSpaceNormal * _DetailNoiseTiling * _WaterTiling).r * _DetailNoiseStrength;
+		float  polar = d.extraV2F1.z + noise;
+
+		ContributeDetail(o, _DetailMapA, d.extraV2F0, polar, _DetailTilingA, mask.r * _DetailScaleA);
+		ContributeDetail(o, _DetailMapB, d.extraV2F0, polar, _DetailTilingB, mask.g * _DetailScaleB);
+	}
+END_CODE

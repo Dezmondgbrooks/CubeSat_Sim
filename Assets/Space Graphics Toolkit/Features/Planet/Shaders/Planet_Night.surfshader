@@ -1,0 +1,37 @@
+﻿BEGIN_SUBSHADERS
+	"Planet_Common.surfshader"
+END_SUBSHADERS
+
+BEGIN_PROPERTIES
+	[Header(NIGHT)]
+	[Toggle(_NIGHT)] _HasNight ("	Enabled", Float) = 0
+	[NoScaleOffset]_NightTex("	Texture (RGB)", 2D) = "black" {}
+	_NightSharpness("	Sharpness", Range(1,20)) = 1
+	_NightOffset("	Offset", Range(-1,2)) = 0
+	[HideInEditor]_NightDirection("	Direction", Vector) = (0,0,1)
+END_PROPERTIES
+
+BEGIN_DEFINES
+   #pragma shader_feature_local _ _NIGHT
+END_DEFINES
+
+BEGIN_CBUFFER
+	float  _NightSharpness;
+	float  _NightOffset;
+	float3 _NightDirection;
+END_CBUFFER
+
+BEGIN_CODE
+	TEXTURE2D(_NightTex);
+	SAMPLER(sampler_NightTex);
+
+	void SurfaceFunction(inout Surface o, ShaderData d)
+	{
+	#if _NIGHT
+		float4 nightTex = SAMPLE_TEXTURE2D(_NightTex, sampler_NightTex, d.texcoord0);
+		float  darkness = pow(saturate(dot(d.worldSpaceNormal, _NightDirection) + _NightOffset), _NightSharpness);
+
+		o.Emission = nightTex * darkness;
+	#endif
+	}
+END_CODE

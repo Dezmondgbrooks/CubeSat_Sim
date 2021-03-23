@@ -1,0 +1,43 @@
+﻿BEGIN_CODE
+#ifndef __PLANET_COMMON__
+	#define __PLANET_COMMON__
+
+	float4 sample2(sampler2D tex, float4 coords, float polar)
+	{
+		float4 tex1 = tex2D(tex, coords.xy);
+		float4 tex2 = tex2D(tex, coords.zw);
+
+		return lerp(tex1, tex2, polar);
+	}
+
+	float4 sample_grad(sampler2D s, float4 uv, float polar, float4 gx, float4 gy)
+	{
+		float2 uv2 = polar < 0.5f ? uv.xy : uv.zw;
+		float2 gx2 = polar < 0.5f ? gx.xy : gx.zw;
+		float2 gy2 = polar < 0.5f ? gy.xy : gy.zw;
+
+		return tex2Dgrad(s, uv2, gx2, gy2);
+	}
+
+	float4 sample_spherical(sampler2D s, float4 uv, float polar, int levels)
+	{
+		float  levelF  = polar * levels;
+		float  levelC  = levels * 0.75f;
+		float  levelA  = floor(levelF);
+		float  levelB  = levelA + 1.0f;
+		float4 uvA     = uv + sin(float4(89.0f, 97.0f, 89.0f, 97.0f) / 25.113f * levelA);
+		float4 uvB     = uv + sin(float4(89.0f, 97.0f, 89.0f, 97.0f) / 25.113f * levelB);
+		float4 gradX   = ddx(uv);
+		float4 gradY   = ddy(uv);
+		float4 sampleA = sample_grad(s, uvA, levelA > levelC, gradX, gradY);
+		float4 sampleB = sample_grad(s, uvB, levelB > levelC, gradX, gradY);
+
+		return lerp(sampleA, sampleB, levelF - levelA);
+	}
+
+	half3 CombineNormals(half3 n1, half3 n2)
+	{
+		return normalize(half3(n1.xy + n2.xy, n1.z*n2.z));
+	}
+#endif
+END_CODE

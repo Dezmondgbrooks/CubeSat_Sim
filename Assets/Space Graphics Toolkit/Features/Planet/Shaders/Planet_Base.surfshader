@@ -1,0 +1,51 @@
+﻿BEGIN_SUBSHADERS
+	"Planet_Common.surfshader"
+END_SUBSHADERS
+
+BEGIN_PROPERTIES
+	_Color("Color", Color) = (1,1,1,1)
+	_Metallic("Metallic", Range(0,1)) = 0
+	_GlossMapScale("Smoothness", Range(0,1)) = 1
+	_BumpScale("Normal Strength", Range(0,5)) = 1
+
+	[NoScaleOffset]_MainTex("Albedo (RGB) Smoothness (A)", 2D) = "white" {}
+	[NoScaleOffset][Normal]_BumpMap("Normal", 2D) = "bump" {}
+	[NoScaleOffset]_HeightMap("Height (A)", 2D) = "white" {}
+END_PROPERTIES
+
+BEGIN_CBUFFER
+	float4 _Color;
+	float  _Metallic;
+	float  _GlossMapScale;
+
+	float _BumpScale;
+END_CBUFFER
+
+BEGIN_CODE
+	TEXTURE2D(_MainTex);
+	SAMPLER(sampler_MainTex);
+	TEXTURE2D(_BumpMap);
+	SAMPLER(sampler_BumpMap);
+
+	sampler3D _NoiseTex;
+
+	void ModifyVertex(inout VertexData v, inout ExtraV2F d)
+	{
+		d.extraV2F0 = float4(v.texcoord0.xy, v.texcoord0.zw); d.extraV2F0.x *= 2.0f;
+		d.extraV2F1.xy = v.texcoord0.xy;
+		d.extraV2F1.z  = saturate((abs(v.texcoord0.y - 0.5f) - 0.2f) * 30.0f);
+	}
+
+	void SurfaceFunction(inout Surface o, ShaderData d)
+	{
+		float2 coord   = d.extraV2F1.xy;
+		float4 texMain = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, coord);
+
+		o.Albedo     = texMain.rgb * _Color.rgb;
+		o.Normal     = UnpackScaleNormal(SAMPLE_TEXTURE2D(_BumpMap, sampler_BumpMap, coord), _BumpScale);
+		o.Metallic   = _Metallic;
+		o.Smoothness = _GlossMapScale * texMain.a;
+		o.Occlusion  = 1.0f;
+		o.Alpha      = 0.0f;
+	}
+END_CODE

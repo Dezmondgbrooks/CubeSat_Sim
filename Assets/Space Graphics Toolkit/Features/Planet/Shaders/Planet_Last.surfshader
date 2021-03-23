@@ -1,0 +1,4 @@
+﻿BEGIN_PROPERTIES
+	[Header(OTHER)]
+	[NoScaleOffset]_NoiseTex("	Noise Texture (RG)", 3D) = "black" {}
+END_PROPERTIES

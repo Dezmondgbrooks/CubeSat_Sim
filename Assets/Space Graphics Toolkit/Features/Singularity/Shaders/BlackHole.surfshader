@@ -1,0 +1,76 @@
+﻿BEGIN_OPTIONS
+	GrabPass { "_Grab" }
+	Workflow "Unlit"
+	Alpha "Blend"
+	Cull "Front"
+	Tags { "Queue"="Transparent" }
+END_OPTIONS
+
+BEGIN_PASS("All")
+	Cull Front
+END_PASS
+
+BEGIN_CBUFFER
+	float4 _WorldPosition;
+	float  _PinchPower;
+	float  _PinchScale;
+	
+	float  _HoleSize;
+	float  _HolePower;
+	float4 _HoleColor;
+
+	float     _TintPower;
+	float4    _TintColor;
+
+	float _FadePower;
+END_CBUFFER
+
+BEGIN_CODE
+	float4 ComputeScreenPosALL(float4 p)
+	{
+	#if _HDRP
+		return ComputeScreenPos(p, _ProjectionParams.x);
+	#else
+		return ComputeScreenPos(p);
+	#endif
+	}
+
+	void ModifyVertex(inout VertexData v, inout ExtraV2F e)
+	{
+		float4 projPos = mul(UNITY_MATRIX_VP, _WorldPosition);
+
+		e.extraV2F0 = ComputeScreenPosALL(projPos);
+	}
+
+	void SurfaceFunction(inout Surface o, ShaderData d)
+	{
+		float2 screen = d.screenUV;
+		float2 center = d.extraV2F0.xy / d.extraV2F0.w;
+		screen *= _ScreenParams;
+		center *= _ScreenParams;
+
+		float  edge  = pow(-d.tangentSpaceViewDir.z, -_PinchPower);
+		float2 delta = center - screen;
+
+		screen = screen + normalize(delta) * (length(delta) * _PinchScale / edge);
+		screen /= _ScreenParams;
+
+		// Mirror edges
+		float2 relative = screen - 0.5f;
+		screen -= sign(relative) * max(0.0f, abs(relative) - 0.5f) * 2.0f;
+
+		/// Scene color
+		o.Albedo = GetSceneColor(screen);
+
+		// Hole color
+		float hole = saturate(pow(edge - _HoleSize, -_HolePower));
+		o.Albedo = lerp(o.Albedo, _HoleColor, hole * _HoleColor.a);
+
+		// Tint color
+		float tint = saturate(pow(edge - _HoleSize, -_TintPower));
+		o.Albedo = lerp(o.Albedo, o.Albedo * _TintColor, tint * _TintColor.a);
+
+		// Fade edges
+		o.Alpha = saturate(1.0f - pow(length(d.tangentSpaceViewDir.xy), _FadePower));
+	}
+END_CODE
