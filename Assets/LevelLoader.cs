@@ -21,6 +21,12 @@ public class LevelLoader : MonoBehaviour
         SceneManager.LoadScene(scene_name);
     }
 
+    public void OnMarco()
+    {
+        transition.SetTrigger("Start");
+        SceneManager.LoadScene("Marco");
+    }
+
    /* IEnumerator LoadLevel(string name)
     {
         transition.SetTrigger("Start");
