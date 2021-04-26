@@ -4,7 +4,7 @@ using UnityEngine;
 using SpaceGraphicsToolkit;
 using System;
 
-public class Deploy : MonoBehaviour
+public class Deploy2 : MonoBehaviour
 {
     public GameObject CubeSat;
     public GameObject Earth;
@@ -17,7 +17,7 @@ public class Deploy : MonoBehaviour
     public double G;
     public double Rs;
 
-    public List<GameObject> CubeList; 
+    public List<GameObject> CubeList;
     int count = 0;
     public double Range = 0.0;
     public int CubeCount = 0;
@@ -39,7 +39,7 @@ public class Deploy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
- 
+
         if (made && !UI.GetComponent<SimUI>().isPaused && Time.time > nextActionTime)
         {
             nextActionTime += period;
@@ -57,9 +57,9 @@ public class Deploy : MonoBehaviour
 
             //}
             count += 1;
-            if (count > CubeList.Count-2) { count = 0; }
+            if (count > CubeList.Count - 2) { count = 0; }
         }
-        
+
     }
 
     private double DistanceBetween(GameObject item1, GameObject item2)
@@ -116,10 +116,10 @@ public class Deploy : MonoBehaviour
     public long NumNeeded(double distance)
     {
         // in km
-        double total = DistanceBetween(Earth, Planet) * Uunit;//double total = Vector3.Distance(Earth.position, Planet.position) * Uunit;
+        double total = DistanceBetween(Earth, Planet) * Uunit;//Vector3.Distance(Earth.position, Planet.position) * Uunit;
         //UnityEngine.Debug.Log("Distance: " + distance);
         //UnityEngine.Debug.Log("Distance total: " + total);
-        return Convert.ToInt64(total / distance) *2 ;
+        return Convert.ToInt64(total / distance) * 2;
     }
 
     public void Populate()
@@ -137,7 +137,7 @@ public class Deploy : MonoBehaviour
         GameObject temp;
 
         // degrees per second
-        double speed = (double)((Earth.GetComponent<SgtSimpleOrbit>().DegreesPerSecond - Planet.GetComponent<SgtSimpleOrbit>().DegreesPerSecond) / numCube);// numCube;
+        double speed = (double)((Earth.GetComponent<SgtSimpleOrbit>().Radius - Planet.GetComponent<SgtSimpleOrbit>().Radius) / numCube);// numCube;
 
         for (int i = 1; i <= numCube; i++)
         {
@@ -147,7 +147,7 @@ public class Deploy : MonoBehaviour
             //temp.transform.parent = Sun.transform;
             CubeList.Add(temp);
 
-            CubeList[i - 1].GetComponent<SgtSimpleOrbit>().Radius = 10.0f - (float)spacing*i;
+            CubeList[i - 1].GetComponent<SgtSimpleOrbit>().Radius = 10.0f + (float)spacing * i;
             CubeList[i - 1].GetComponent<SgtSimpleOrbit>().Angle = 0;
             prev = prev - (float)speed;
             CubeList[i - 1].GetComponent<SgtSimpleOrbit>().DegreesPerSecond = prev;
@@ -160,7 +160,7 @@ public class Deploy : MonoBehaviour
         List<double> Links = new List<double>();
         double preDivide = 0.0;
         double temp = 0.0;
-        for (int i = 0; i < CubeList.Count-1; i++)
+        for (int i = 0; i < CubeList.Count - 1; i++)
         {
             temp = LinkMarginCalc(i, i + 1);
             Links.Add(temp);
@@ -186,15 +186,13 @@ public class Deploy : MonoBehaviour
             preDivide += temp;
         }
         powerList.Sort();
-        LowPower = powerList[1];
+        LowPower = powerList[0];
         return preDivide / CubeList.Count;
     }
 
     public double calcPower(int cube)
     {
-        double dist = DistanceBetween(Sun, CubeList[cube]) * Uunit;
-        UnityEngine.Debug.Log("Distance: " + dist);
-        return (Math.Pow(695000000.0, 2) / Math.Pow(dist * 1000, 2)) * 64000000.0 * 0.30;
+        double dist = DistanceBetween(Sun, CubeList[cube]);
+        return (Math.Pow(695000000.0, 2) / Math.Pow(dist, 2)) * 64000000.0;
     }
 }
-

@@ -7,7 +7,6 @@ using UnityEngine.UI;
 public class Simulator : MonoBehaviour
 {
     public GameObject SimRanUI;
-    public Text Antenna;
     public Text Link;
 
     void Start() { SimRanUI.SetActive(false); }
@@ -18,22 +17,17 @@ public class Simulator : MonoBehaviour
         
     }
 
-    public double AntennaGain()
-    {
-        return 0;
-    }
-
     public double LinkMarginCalc()
     {
         // Rs sensitiviy can be estimated using websites
-        double Rs = 0;
-        double Gr = 0;
+        double Rs = 156;
+        double Gr = 22.5;
         double Gt = 25.5;
-        double Tp = 0;
-        double d = 157000000000000;
-        double f = 0;
-        double FSL = 20 * Math.Log(d) + 20 * Math.Log(f) + 92.45;
-        return Gr + Gt + Tp - Rs - FSL;
+        double Tp = 10.0;
+        double d = 157.0 * Math.Pow(10,6);
+        double f = 8.46;
+        double FSL = 20 * Math.Log(d,10.0) + 20 * Math.Log(f, 10.0) + 92.45 -64.33;
+        return Gr + Gt + Tp + Rs - FSL;
     } 
 
     public void onBack()
@@ -45,13 +39,10 @@ public class Simulator : MonoBehaviour
     {
         SimRanUI.SetActive(true);
         double LM = LinkMarginCalc();
-        double Ant = AntennaGain();
         string specifier = "G";
-
         string linkMargin = LM.ToString();
-        string antennaGain = Ant.ToString();
+       
 
-        Antenna.text = antennaGain;
         Link.text = linkMargin;
     }
 }

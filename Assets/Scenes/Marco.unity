@@ -644,6 +644,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 528c9855f0dcdec4ba4319b39063c041, type: 3}
+--- !u!114 &240644318 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4973513685222276339, guid: e2fc370cacb3d644992b675dfa3f69d8,
+    type: 3}
+  m_PrefabInstance: {fileID: 9172843679557536377}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &251049745
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -842,7 +854,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 387363323}
-  m_LocalRotation: {x: -0.6817798, y: 0.66882026, z: -0.2594205, w: -0.14337668}
+  m_LocalRotation: {x: -0.5387481, y: 0.8096689, z: -0.14276648, w: 0.1838603}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 2000, y: 2000, z: 2000}
   m_Children:
@@ -953,18 +965,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MarcoUI: {fileID: 624050384}
---- !u!114 &434407392 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2944547288723071763, guid: e2fc370cacb3d644992b675dfa3f69d8,
-    type: 3}
-  m_PrefabInstance: {fileID: 9172843679557536377}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &488113571
 GameObject:
   m_ObjectHideFlags: 0
@@ -1123,18 +1123,6 @@ MonoBehaviour:
   tilt: {x: 60, y: 0, z: 0}
   angle: 225
   degreesPerSecond: 10
---- !u!114 &586021197 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4973513685222276339, guid: e2fc370cacb3d644992b675dfa3f69d8,
-    type: 3}
-  m_PrefabInstance: {fileID: 9172843679557536377}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &624050384 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2864451147135504351, guid: 528c9855f0dcdec4ba4319b39063c041,
@@ -2085,7 +2073,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1687221635}
-  m_LocalRotation: {x: -0.2844575, y: -0.08330538, z: 0.0049697636, w: 0.95504946}
+  m_LocalRotation: {x: -0.034753427, y: -0.23017196, z: 0.07455371, w: 0.96966743}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -2317,12 +2305,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1458199578}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1934678855 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4413626260385298231, guid: e2fc370cacb3d644992b675dfa3f69d8,
-    type: 3}
-  m_PrefabInstance: {fileID: 9172843679557536377}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1946720208
 GameObject:
   m_ObjectHideFlags: 0
@@ -2399,9 +2381,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfdc7ee3dd72f7643881ba689bb05e34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SimRanUI: {fileID: 1934678855}
-  Antenna: {fileID: 434407392}
-  Link: {fileID: 586021197}
+  SimRanUI: {fileID: 2076056802}
+  Antenna: {fileID: 0}
+  Link: {fileID: 240644318}
 --- !u!1 &2098392075
 GameObject:
   m_ObjectHideFlags: 0
